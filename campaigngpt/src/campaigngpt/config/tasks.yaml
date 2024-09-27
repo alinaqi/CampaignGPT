@@ -1,0 +1,56 @@
+create_strategy_task:
+  description: >
+    Develop a comprehensive campaign strategy based on the provided business goals, including target audience identification, key messaging, budget allocation, and suggested platforms for the campaign.
+  expected_output: >
+    A detailed campaign strategy outlining target demographics, messaging, platform recommendations, and budget allocations.
+  agent: business_layer_agent
+  context: []
+
+create_ads_task:
+  description: >
+    Create engaging ads based on the campaign strategy, including ad copy, headlines, descriptions, and suggested images or creatives suitable for the target platforms.
+  expected_output: >
+    A set of ad creatives with copy, headlines, descriptions, and image suggestions tailored for each advertising platform.
+  agent: ads_layer_agent
+  context:
+    - create_strategy_task
+
+deploy_campaign_task:
+  description: >
+    Deploy the ads to the specified advertising platforms, ensuring correct targeting settings, budgets, and monitoring initial performance metrics for potential issues.
+  expected_output: >
+    A confirmation of the successful deployment of the ads along with any initial setup issues or recommendations for adjustments.
+  agent: campaign_layer_agent
+  context:
+    - create_ads_task
+
+analyze_performance_task:
+  description: >
+    Analyze the campaign's performance by reviewing metrics such as CTR, CPC, conversion rates, and ROI, and provide insights and suggestions for optimization.
+  expected_output: >
+    A performance report detailing the strengths and weaknesses of the campaign, along with actionable recommendations for optimization.
+  agent: decision_layer_agent
+  context:
+    - deploy_campaign_task
+
+conduct_competitor_analysis_task:
+  description: >
+    Conduct a comprehensive competitor analysis to identify strengths, weaknesses, opportunities, and threats in comparison to our campaign strategy.
+  expected_output: >
+    A detailed report on competitors’ campaigns, highlighting what strategies are working for them and how we can adapt or improve our campaign.
+  agent: intel_layer_agent
+  context:
+    - create_strategy_task
+
+summarize_campaign_task:
+  description: >
+    Summarize the entire campaign process, including the strategies, ads, deployment, performance analysis, and competitor insights to create a final report for the client.
+  expected_output: >
+    A complete campaign summary report, detailing each phase's activities, outcomes, learnings, and recommendations for future campaigns.
+  agent: manager_agent
+  context:
+    - create_strategy_task
+    - create_ads_task
+    - deploy_campaign_task
+    - analyze_performance_task
+    - conduct_competitor_analysis_task
