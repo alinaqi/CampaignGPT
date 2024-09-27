@@ -58,11 +58,7 @@ The CampaignGPT crew is a multi-agent system where each agent has a unique role 
 
 ## Support
 
-For support, questions, or feedback regarding CampaignGPT or crewAI:
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord community](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+For support, questions, or feedback regarding CampaignGPT or crewAI, contact me.
 
 Harness the power of AI to create data-driven marketing campaigns effortlessly with CampaignGPT and crewAI. Let’s revolutionize the way you approach digital marketing!
 
