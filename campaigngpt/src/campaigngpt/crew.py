@@ -181,17 +181,22 @@ class CampaigngptCrew():
         print("Agent config: ", config)
 
         # Create the LLM instance
-        print("Creating LLM instance for the Manager Agent.")
         llm_instance = LLM(
             model="gpt-4o-mini",
             temperature=0.7,
             base_url="https://api.openai.com/v1",
         )
 
-        def execute_task(user_input):
+        def execute_task(user_input=None):
+            if not user_input:
+                user_input = {}  # Ensure user_input is a dictionary
+
             # Process the user question or instruction
-            print("Manager Agent received user input:", user_input)
             user_question = user_input.get("user_question", "")
+            if not user_question:
+                print("No specific question provided. Prompting for further instructions...")
+                user_question = input("Please provide your instructions or ask a question: ")
+            
             print(f"Manager Agent processing user question: {user_question}")
 
             # Simulate manager response to user's question
@@ -211,14 +216,14 @@ class CampaigngptCrew():
                 }
             else:
                 response = {
-					"answer": f"The campaign currently focuses on {self.current_results.get('best_variant', 'variant B')} performing better.",
-					"next_campaign_phase": {
-						"campaign_objectives": "Optimize ad spend based on previous results",
-						"budget": 3000,  # Example change in budget for the next phase
-						"platforms": ["LinkedIn", "Instagram"],  # Example change in platforms
-					} if "optimize" in user_question.lower() else None
-				}
-            
+                    "answer": f"The campaign currently focuses on {self.current_results.get('best_variant', 'variant B')} performing better.",
+                    "next_campaign_phase": {
+                        "campaign_objectives": "Optimize ad spend based on previous results",
+                        "budget": 3000,  # Example change in budget for the next phase
+                        "platforms": ["LinkedIn", "Instagram"],  # Example change in platforms
+                    } if "optimize" in user_question.lower() else None
+                }
+
             print("Manager Agent response:", response)
             return response
 
@@ -228,10 +233,9 @@ class CampaigngptCrew():
             backstory=config.get('backstory', 'Experienced marketing professional'),
             llm=llm_instance,
             verbose=True,
-            execute_task=execute_task  # Define the execute_task logic for manager's tasks
+            execute_task=execute_task,  # Define the execute_task logic for manager's tasks
+            human_input=True  # Ensure human_input is enabled to prompt the user
         )
-
-
 
     @task
     def create_strategy_task(self) -> Task:
@@ -261,6 +265,7 @@ class CampaigngptCrew():
             description=description,
             expected_output=expected_output,  # Make sure expected_output is included
             agent=self.business_layer_agent(),
+            human_input=True,
             execute=execute_task
         )
 
@@ -293,6 +298,7 @@ class CampaigngptCrew():
             description=description,
             expected_output=expected_output,  # Include expected_output here
             agent=self.ads_layer_agent(),
+            human_input=True,
             execute=execute_task
         )
 
@@ -330,6 +336,7 @@ class CampaigngptCrew():
             description=description,
             expected_output=expected_output,  # Include expected_output
             agent=self.campaign_layer_agent(),
+            human_input=True,
             execute=execute_task
         )
 
@@ -367,6 +374,7 @@ class CampaigngptCrew():
             description=description,
             expected_output=expected_output,  # Include expected_output
             agent=self.decision_layer_agent(),
+            human_input=True,
             execute=execute_task
         )
 
@@ -392,6 +400,7 @@ class CampaigngptCrew():
             description=description,
             expected_output=expected_output,  # Include expected_output
             agent=self.manager_agent(),
+            human_input=True,
             execute=execute_task
         )
 
@@ -456,6 +465,7 @@ class CampaigngptCrew():
             expected_output=expected_output,  # Include expected_output
             agent=agent,
             inputs=self.inputs,
+            human_input=True,
             execute=execute_task
         )
 

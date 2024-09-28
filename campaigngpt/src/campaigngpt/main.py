@@ -1,11 +1,9 @@
 import sys
 import os
-import json
 
 # Add the 'src' directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from campaigngpt.crew import CampaigngptCrew
-from crewai import Task
 
 def main():
     # Define the input data required for your campaign
@@ -35,8 +33,6 @@ def main():
         print(e)
         return
 
-    # Start interaction loop with the Campaign Manager
-    interact_with_manager(campaign_crew)
 
 def interact_with_manager(campaign_crew):
     print("\nYou can now interact with the Campaign Manager Agent.")
@@ -52,23 +48,17 @@ def interact_with_manager(campaign_crew):
             # Access the manager agent directly
             manager_agent = campaign_crew.manager_agent()
             
-            # Create a new Task with human_input set to True
-            human_input_task = Task(
-                description=f"User question: {user_input}",
-                expected_output="Manager's response or campaign adjustment instructions",
-                agent=manager_agent,
-                inputs={"user_question": user_input},
-                human_input=True  # This is critical to enable human interaction
-            )
+            # Execute the task with the user's input
+            print("\nSending your question to the Campaign Manager Agent...")
+            response = manager_agent.execute_task({"user_question": user_input})
             
-            # Execute the manager agent's task with human input enabled
-            response = human_input_task.execute() if hasattr(human_input_task, 'execute') else human_input_task
+            # Display the response from the manager
             if response and isinstance(response, dict):
                 print("\nCampaign Manager Response:", response.get("answer", "No response"))
                 
                 # Check for next steps provided by the manager
-                if "next_campaign_phase" in response and response["next_campaign_phase"]:
-                    print("Executing the next campaign phase as instructed by the Campaign Manager...")
+                if response.get("next_campaign_phase"):
+                    print("\nExecuting the next campaign phase as instructed by the Campaign Manager...")
                     campaign_crew.run_next_campaign_phase()
                     
         except Exception as e:
